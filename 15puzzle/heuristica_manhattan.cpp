@@ -6,3 +6,14 @@ unsigned manhattan (state_t state){
     }
     return res;
 }
+
+
+unsigned gap (state_t state){
+    unsigned res = 0;
+    for (int i = 0; i < 27, i++){            
+        if (res < abs(state.vars[i] - state.vars[i+1])) { 
+            res = abs(state.vars[i] - state.vars[i+1]);
+        }
+    }
+    return res;
+}
