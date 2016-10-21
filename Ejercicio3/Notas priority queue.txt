@@ -1,0 +1,58 @@
+Notas priority queue
+
+PriorityQueue es un clase con miembros
+	m_max:     entero tamaño máximo
+	m_at:      entero con la posición del vector que contiene al objeto con mayor prioridad 
+	m_buckets: vector de vectores de vectores
+
+Add
+
+Cuando vas a insertar un elemento, le das la posicion (f) en la cual vas a insertar
+la prioridad (g) y el tipo de datos (data)
+
+cuando inserta lo que hace es insertar en la posición g del vector que esta dentro del vector en la posicion f de 
+m_buckets el objeto de tipo data.
+
+Top
+
+Retorna el ultimo elemento del ultimo vector dentro del vector en la posicion m_at, i.e. el objeto con prioridad 
+máxima actual.
+
+CurrentPriority
+
+Retorna la posición del vector que contiene al objeto con mayor prioridad
+
+Empty
+
+Retorna si la posición del vector que contiene al objeto con mayor prioridad es igual al
+tamaño máximo del vector. Si es así, el vector esta vacio ya que m_at apunta a una posición
+fuera del vector. (posición del ultimo elemento posible del ector + 1).
+
+Pop
+
+Hace pop del vector que esta en la posición del vector que contiene al objeto con mayor prioridad (pos m_at)
+este pop lo que hace es remover el último elemento del ultimo ultimo vector en el vector en la posición m_at 
+y reducir el tamaño de este ultimo vector en uno. Si el ultimo vector dentro del vector en la posición m_at se queda 
+sin elementos saca todos los vectores del vector en la posición m_at.
+
+Después, aumenta la posición de m_at a medida que los vectores m_stack dentro de m_bucket esten vacios.
+
+Clear
+
+Remueve todos los elementos (vectores) para todos los vectores que ocupan cada una de las posiciones del vector m_bucket
+y los hace de tamaño cero.
+
+Luego hace m_at = m_max
+
+Modify
+
+Modifica el objeto en la posición index del vector en la posición g dentro del en vector en la posición f de m_buckets
+con el nuevo objeto data
+
+
+[ [[],[]] ; [[],[]] ]
+
+[ [[] [] [] []] ; [[]] ; [[] [] [] []] ]
+
+Cuando hago el open.Add el f representa la prioridad del estado y g siempre es cero ya que para una misma prioridad
+no es necesario varias g ya que g idexa los estados en nuevos vectores dentro del vector que contiene los estados de prioridad g. 

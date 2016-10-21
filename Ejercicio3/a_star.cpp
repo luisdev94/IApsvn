@@ -1,3 +1,17 @@
+/** Universidad Simón Bolívar
+*   Departamento de Computación y Tecnología de la Información
+*   CI5437 - Inteligencia Artificial I
+*   Trimestre Sept-Dic 2016
+*
+*   Proyecto I PSVN
+*   A estrella con herística Manhattan.
+* 
+*   Hecho por: Luis Carlos Díaz 11-10293
+*              Gabriel Iglesias 11-10476
+*              Fernando Saraiva 09-19794
+*            
+*/
+
 #include <cstdio>
 #include <cstdlib>
 #include <climits>  // for INT_MAX
@@ -11,9 +25,9 @@
 #include "priority_queue.hpp"
 
 #define  WHITE 0
-#define  GRAY 1
+#define  GRAY  1
 #define  BLACK 2
-#define  MAX_LINE_LENGTH 40 
+#define  MAX_LINE_LENGTH 999 
 
 class Node {
 
@@ -71,76 +85,15 @@ void Node::set_color(int c) {
     color = c;
 };
 
-/*
-Recibe un string correspondiente al estado del 15puzzle psvn,
-recibe un array de 16 enteros, y transforma los chars a ints.
-la letra B correspondiente al Blank lo convierte en 0*/
-int charArrayToInt (char *stateStr, int *state) {
-
-    int j = 0;
-    int temp = 0;
-    
-    for (unsigned int i = 0; (i < strlen(stateStr)); ++i) {
-        
-        if ((stateStr[i] == 'B') or (stateStr[i] == 'b')) {
-            temp = 0;
-        } 
-        
-        else if (stateStr[i] == ' ') {
-            state[j] = temp;
-            temp = 0;
-            // std::cout << "Asignado el valor: " << estado[j] << std::endl;
-            ++j;
-        } 
-
-        else {
-            if (temp == 0) {
-                temp = stateStr[i]-48;
-            } else {
-                temp = temp*10 + stateStr[i]-48; 
-            }
-        }
-    }
-    
-    return 1;
-}
-
-/*Recibe un estado de psvn (15 puzzle), lo transforma a texto,
-luego lo transforma a un array de enteros, y finalmente
-calcula el costo de llevar cada valor al goal (individualmente)*/
-unsigned manhattan (state_t state){
+unsigned manhattan(state_t state) {
     
     unsigned res = 0;
-    int stateInt[16];
-    char stateStr[MAX_LINE_LENGTH + 1];
-    
-    if ((sprint_state(stateStr, MAX_LINE_LENGTH + 1, &state)) <= 0) {
-        std::cout << "No se pudo imprimir el estado del psvn" << std::endl;
-        exit(1);
-    };
-
-    if (charArrayToInt(stateStr, stateInt)) {
-        for (int i = 0; i < 16; i++) {
-            res += std::abs( (int(i/4)) - int(stateInt[i]/4) );
-            res += std::abs( (i%4) - (stateInt[i]%4));
-        }
-    } 
-
-    else {
-        std::cout << "No se pudo transformar de char a int";
-        exit(1);
+    for (int i = 0; i<16; i++) {
+        res += std::abs( (int(i/4)) - int(state.vars[i]/4) );
+        res += std::abs( (i%4) - (state.vars[i]%4));
     }
-
     return res;
 }
-
-/*struct GreaterThan {
-
-    bool operator()(const state_t state01, const state_t state02) const
-    {
-        return ;
-    }
-};*/
 
 int a_star( state_t state ) {
 
@@ -159,7 +112,7 @@ int a_star( state_t state ) {
     state_map_t *map = new_state_map(); // contains the cost-to-goal for all states that have been generated
 
     state_map_add(map, &state, 0);
-    open.Add(manhattan(state), manhattan(state), state);
+    open.Add(manhattan(state), 0, state);
 
     // Search
     while (!open.Empty()) {
@@ -188,23 +141,28 @@ int a_star( state_t state ) {
               
             //std::cout << cost << std::endl;
             //std::cout << priority << std::endl;
+            old_cost = state_map_get(map, &child);
 
             // check if either this child has not been seen yet or if
             // there is a new cheaper way to get to this child.
-            old_cost = state_map_get(map, &child);
-            if( (old_cost == NULL) || (*old_cost > cost) ) {
+            if (old_cost == NULL) {
+                state_map_add(map, &child, cost);
+                open.Add(priority, 0, child);
+            }
+
+            else if (*old_cost > cost) {
                 // add to open with the new distance
                 state_map_add(map, &child, cost);
-                open.Add(priority, priority, child);
-            }
-        } 
+                    open.Add(priority, 0, child);
+                }
+            } 
+        }
+
+        return -1;
     }
 
-    return -1;
-}
-
 int main( int argc, char **argv ) {
-    
+        
     // VARIABLES FOR INPUT
     char str[ MAX_LINE_LENGTH +1 ] ;
     ssize_t nchars; 
@@ -213,23 +171,24 @@ int main( int argc, char **argv ) {
     // READ A LINE OF INPUT FROM stdin
     printf("Please enter a state followed by ENTER: ");
     if ( fgets(str, sizeof str, stdin) == NULL ) {
-	printf("Error: empty input line.\n");
-	return 0; 
+	   printf("Error: empty input line.\n");
+	   return 0; 
     }
 
     // CONVERT THE STRING TO A STATE
     nchars = read_state( str, &state );
     if (nchars <= 0) {
-	printf("Error: invalid state entered.\n");
-	return 0; 
+	   printf("Error: invalid state entered.\n");
+	   return 0; 
     }
 
-    //int costo = a_star(state);
+    int costo = a_star(state);
 
-    int costo = manhattan(state);
+    //int costo = manhattan(state);
 
     printf("The state you entered is: ");
     print_state( stdout, &state );
+    printf("\n");
     printf("And the cost to reach it is: ");
     printf("%d", costo);
     printf("\n");
