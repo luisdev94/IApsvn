@@ -8,7 +8,7 @@ unsigned manhattan (state_t state){
 }
 
 
-unsigned gap (state_t state){
+unsigned gap28 (state_t state){
     unsigned res = 0;
     for (int i = 0; i < 27, i++){            
         if (res < abs(state.vars[i] - state.vars[i+1])) { 
