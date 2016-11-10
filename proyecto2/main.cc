@@ -44,7 +44,13 @@ int minmax(state_t state, int depth, bool use_tt = false);
 int maxmin(state_t state, int depth, bool use_tt = false);
 int negamax(state_t state, int depth, int color, bool use_tt = false);
 int negamax(state_t state, int depth, int alpha, int beta, int color, bool use_tt = false);
-int scout(state_t state, int depth, int color, bool use_tt = false);
+int scout(state_t state, int depth, int color, bool use_tt = false) {
+    if (depth == 0 || state.terminal()) { 
+        return state.value();
+    }
+    int score = 0;
+    return score;
+}
 int negascout(state_t state, int depth, int alpha, int beta, int color, bool use_tt = false);
 
 int main(int argc, const char **argv) {
@@ -60,14 +66,22 @@ int main(int argc, const char **argv) {
     state_t state;
     cout << "Extracting principal variation (PV) with " << npv << " plays ... " << flush;
     for( int i = 0; PV[i] != -1; ++i ) {
-        bool player = i % 2 == 0; // black moves first!
+        bool player = i % 2 == 0; // black moves first!        
         int pos = PV[i];
         pv[npv - i] = state;
+        //cout << endl << "representacion? " << pos <<endl;
+        std::vector<int> movemove = state.get_moves(player);
+        for (unsigned int c = 0; c < movemove.size(); c++) {
+            cout << endl << "posibles movimientos: " << movemove[c] << endl;   
+        }
+
         state = state.move(player, pos);
         
-        // Print the board after each move.
-        // cout << endl << state << endl;
-        // sleep(1);
+        //int moves = movemove[0];
+         //Print the board after each move.
+         cout << endl << "moviendo a: " << pos << endl;
+         cout << endl << state << endl;
+         sleep(1);
     }
     pv[0] = state;
     cout << "done!" << endl;
@@ -113,7 +127,7 @@ int main(int argc, const char **argv) {
             } else if( algorithm == 2 ) {
                 //value = negamax(pv[i], 0, -200, 200, color, use_tt);
             } else if( algorithm == 3 ) {
-                //value = scout(pv[i], 0, color, use_tt);
+                value = scout(pv[i], npv-i, color, use_tt);
             } else if( algorithm == 4 ) {
                 //value = negascout(pv[i], 0, -200, 200, color, use_tt);
             }

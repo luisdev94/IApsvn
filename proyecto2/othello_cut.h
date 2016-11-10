@@ -124,14 +124,24 @@ class state_t {
     state_t move(bool color, int pos) const;
     state_t black_move(int pos) { return move(true, pos); }
     state_t white_move(int pos) { return move(false, pos); }
-    int get_random_move(bool color) {
+    std::vector<int> get_moves(bool color) {
         std::vector<int> valid_moves;
         for( int pos = 0; pos < DIM; ++pos ) {
-            if( (color && is_black_move(pos)) || (!color && is_white_move(pos)) ) {
-                valid_moves.push_back(pos);
+            if (color) {
+                if (is_black_move(pos)) {
+                    valid_moves.push_back(pos);
+                }
+            }
+            else {
+                if (is_white_move(pos)) {
+                    valid_moves.push_back(pos);
+                }
             }
         }
-        return valid_moves.empty() ? -1 : valid_moves[lrand48() % valid_moves.size()];
+        if (valid_moves.empty()) {
+            valid_moves.push_back(-1);
+        }
+        return valid_moves;
     }
 
     bool operator<(const state_t &s) const {
