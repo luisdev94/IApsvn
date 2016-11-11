@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <limits>
+#include <climits>
 #include "othello_cut.h" // won't work correctly until .h is fixed!
 #include "utils.h"
 
@@ -39,9 +40,43 @@ class hash_table_t : public unordered_map<state_t, stored_info_t, hash_function_
 
 hash_table_t TTable[2];
 
-int maxmin(state_t state, int depth, bool use_tt);
-int minmax(state_t state, int depth, bool use_tt = false);
-int maxmin(state_t state, int depth, bool use_tt = false);
+int maxmin(state_t state, int depth, bool player, bool use_tt);
+
+// int maxmin(state_t state, int depth, bool use_tt);
+int minmax(state_t state, int depth, bool player, bool use_tt = false){
+    if ((depth == 0) || (state.terminal())) {
+        return state.value();
+    }
+    int score = INT_MAX;
+    std::vector<int> valid_moves = state.get_moves(player);
+    if (valid_moves[0] == (-1)) { // No possible move for this player.
+        score = min(score, maxmin(state, depth, ((player+1) % 2), use_tt));
+    } else {
+        for (unsigned int c = 0; c < valid_moves.size(); c++) {
+            // cout << endl << "posibles movimientos: " << movemove[c] << endl;   
+            score = min(score, maxmin(state.move(player,valid_moves[c]), depth - 1, ((player+1) % 2), use_tt));
+        }
+    }
+    return score;
+};
+
+int maxmin(state_t state, int depth, bool player, bool use_tt = false) {
+    if ((depth == 0) || (state.terminal()))
+        return state.value();
+    int score = INT_MIN;
+    std::vector<int> valid_moves = state.get_moves(player);
+
+    if (valid_moves[0] == (-1)) { // No possible move for this player.
+        score = max(score, minmax(state, depth, ((player+1) % 2), use_tt));
+    } else {
+        for (unsigned int c = 0; c < valid_moves.size(); c++) {
+            // cout << endl << "posibles movimientos: " << movemove[c] << endl;
+            score = max(score, minmax(state.move(player,valid_moves[c]), depth - 1, ((player+1) % 2), use_tt));
+        }
+    }
+    return score;
+};
+
 int negamax(state_t state, int depth, int color, bool use_tt = false);
 int negamax(state_t state, int depth, int alpha, int beta, int color, bool use_tt = false);
 int scout(state_t state, int depth, int color, bool use_tt = false) {
@@ -81,7 +116,7 @@ int main(int argc, const char **argv) {
          //Print the board after each move.
          cout << endl << "moviendo a: " << pos << endl;
          cout << endl << state << endl;
-         sleep(1);
+         // sleep(1);
     }
     pv[0] = state;
     cout << "done!" << endl;
@@ -121,7 +156,7 @@ int main(int argc, const char **argv) {
 
         try {
             if( algorithm == 0 ) {
-                //value = color * (color == 1 ? maxmin(pv[i], 0, use_tt) : minmax(pv[i], 0, use_tt));
+                value = color * (color == 1 ? maxmin(pv[i], i, color, use_tt) : minmax(pv[i], i, color, use_tt));
             } else if( algorithm == 1 ) {
                 //value = negamax(pv[i], 0, color, use_tt);
             } else if( algorithm == 2 ) {
