@@ -144,6 +144,16 @@ class state_t {
         return valid_moves;
     }
 
+    std::vector<int> get_moves2(bool color) {
+        std::vector<int> valid_moves;
+        for ( int pos = 0; pos < DIM; ++pos ) {
+            if( (color && is_black_move(pos)) || (!color && is_white_move(pos)) ) {
+                valid_moves.push_back(pos);
+            }
+        }
+        return valid_moves;
+    }
+
     bool operator<(const state_t &s) const {
         return (free_ < s.free_) || ((free_ == s.free_) && (pos_ < s.pos_));
     }

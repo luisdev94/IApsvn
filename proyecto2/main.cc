@@ -10,10 +10,12 @@
 #include "othello_cut.h" // won't work correctly until .h is fixed!
 #include "utils.h"
 
-
 #include <unistd.h>
 
 #include <unordered_map>
+
+#define BLACK    true
+#define WHITE    false
 
 using namespace std;
 
@@ -77,8 +79,76 @@ int maxmin(state_t state, int depth, bool player, bool use_tt = false) {
     return score;
 };
 
-int negamax(state_t state, int depth, int color, bool use_tt = false);
-int negamax(state_t state, int depth, int alpha, int beta, int color, bool use_tt = false);
+int negamax(state_t state, int depth, int color, bool use_tt = false) {
+
+	if ((depth == 0) || (state.terminal())) {
+        //cout << "terminal " << color * state.value() << endl;
+        return color * state.value();
+    }
+
+    int alpha = INT_MIN;
+    bool player = (color == 1) ? BLACK : WHITE;
+    std::vector<int> valid_moves = state.get_moves2(player);
+    //cout << valid_moves.size()<< "\n" << endl;
+    
+    if (valid_moves.empty()) {   // No possible move for this player.
+        alpha = max(alpha, (-1) * negamax(state, depth, (-1) * color));
+    } 
+
+    else {
+        
+        for (unsigned int i = 0; i < valid_moves.size(); ++i) {
+            //cout << valid_moves[i] << endl;
+            ++generated;
+            alpha = max(alpha, (-1) * negamax(state.move(player, valid_moves[i]), depth - 1, (-1) * color, use_tt));
+        }
+        ++expanded;
+    }
+    
+    //cout << "alpha " << alpha << endl;
+    return alpha;
+
+}
+ 
+int negamax(state_t state, int depth, int alpha, int beta, int color, bool use_tt = false) {
+
+	if ((depth == 0) || (state.terminal())) {
+        //cout << "terminal " << color * state.value() << endl;
+        return color * state.value();
+    }
+
+    int score = INT_MIN;
+    bool player = (color == 1) ? BLACK : WHITE;
+    std::vector<int> valid_moves = state.get_moves2(player);
+
+    if (valid_moves.empty()) {   // No possible move for this player.
+        
+        int aux = (-1) * negamax(state, depth - 1, (-1) * beta, (-1) * alpha, (-1) * color, use_tt);
+        score = max(score, aux);
+        alpha = max(alpha, aux);
+    }
+
+    else {
+        
+        for (unsigned int i = 0; i < valid_moves.size(); ++i) {
+            //cout << valid_moves[i] << endl;
+            ++generated;
+
+            int aux = (-1) * negamax(state.move(player, valid_moves[i]), depth - 1, (-1) * beta, (-1) * alpha, (-1) * color, use_tt);
+            score = max(score, aux);
+            alpha = max(alpha, aux);
+
+            if (alpha >= beta) {   // cut-off
+                break;
+            }
+        }
+        ++expanded;
+    }
+
+    return score;
+
+}
+
 int scout(state_t state, int depth, int color, bool use_tt = false) {
     if (depth == 0 || state.terminal()) { 
         return state.value();
@@ -106,17 +176,17 @@ int main(int argc, const char **argv) {
         pv[npv - i] = state;
         //cout << endl << "representacion? " << pos <<endl;
         std::vector<int> movemove = state.get_moves(player);
-        for (unsigned int c = 0; c < movemove.size(); c++) {
+        /*for (unsigned int c = 0; c < movemove.size(); c++) {
             cout << endl << "posibles movimientos: " << movemove[c] << endl;   
-        }
+        }*/
 
         state = state.move(player, pos);
         
         //int moves = movemove[0];
-         //Print the board after each move.
-         cout << endl << "moviendo a: " << pos << endl;
-         cout << endl << state << endl;
-         // sleep(1);
+        //Print the board after each move.
+        //cout << endl << "moviendo a: " << pos << endl;
+        //cout << endl << state << endl;
+        // sleep(1);
     }
     pv[0] = state;
     cout << "done!" << endl;
@@ -158,9 +228,9 @@ int main(int argc, const char **argv) {
             if( algorithm == 0 ) {
                 value = color * (color == 1 ? maxmin(pv[i], i, color, use_tt) : minmax(pv[i], i, color, use_tt));
             } else if( algorithm == 1 ) {
-                //value = negamax(pv[i], 0, color, use_tt);
+                value = negamax(pv[i], i, color, use_tt);
             } else if( algorithm == 2 ) {
-                //value = negamax(pv[i], 0, -200, 200, color, use_tt);
+                value = negamax(pv[i], i, -200, 200, color, use_tt);
             } else if( algorithm == 3 ) {
                 value = scout(pv[i], npv-i, color, use_tt);
             } else if( algorithm == 4 ) {
