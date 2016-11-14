@@ -187,7 +187,7 @@ bool testgreater(state_t state, int depth, int score, bool color) {
             if (color && testgreater(state.move(color, children[i]), depth - 1, score, !color)) {
                 return true;
             }
-            if (!color || !testgreater(state.move(color, children[i]), depth - 1, score, !color)) {
+            if (!color && !testgreater(state.move(color, children[i]), depth - 1, score, !color)) {
                 return false;
             }
     	}
@@ -210,7 +210,7 @@ bool testgrequal(state_t state, int depth, int score, bool color) {
 		    if (color && testgrequal(state.move(color, children[i]), depth - 1, score, !color)) {
 		        return true;
 		    }
-		    if (!color || !testgrequal(state.move(color, children[i]), depth - 1, score, !color)) {
+		    if (!color && !testgrequal(state.move(color, children[i]), depth - 1, score, !color)) {
 		        return false;
 		    }
 		}
@@ -238,7 +238,7 @@ int scout(state_t state, int depth, int color, bool use_tt = false) {
 				if (player && testgreater(state.move(player, children[i]), depth - 1, score, !player)) {
 					score = scout(state.move(player, children[i]), depth - 1, -color);
 				}
-				if (!player || !testgrequal(state.move(player, children[i]), depth - 1, score, !player)) {
+				if (!player && !testgrequal(state.move(player, children[i]), depth - 1, score, !player)) {
 					score = scout(state.move(player, children[i]), depth - 1, -color);
 				}
 			}
@@ -355,9 +355,9 @@ int main(int argc, const char **argv) {
             } else if( algorithm == 2 ) {
                 value = negamax(pv[i], i, -200, 200, color, use_tt);
             } else if( algorithm == 3 ) {
-                //value = scout(pv[i], 0, color, use_tt);
+                value = color * scout(pv[i], i, color, use_tt);
             } else if( algorithm == 4 ) {
-                //value = negascout(pv[i], 0, -200, 200, color, use_tt);
+                value = negascout(pv[i], i, -200, 200, color, use_tt);
             }
         } catch( const bad_alloc &e ) {
             cout << "size TT[0]: size=" << TTable[0].size() << ", #buckets=" << TTable[0].bucket_count() << endl;
