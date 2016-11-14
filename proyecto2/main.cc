@@ -149,14 +149,120 @@ int negamax(state_t state, int depth, int alpha, int beta, int color, bool use_t
 
 }
 
+bool testgreater(state_t state, int depth, int score, bool color) {
+    generated += 1;
+    if (depth == 0 || state.terminal()) {
+        if (state.value() > score) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    std::vector<int> children = state.get_moves2(color);
+	if (!children.empty()) {
+    	for (unsigned i = 0; i < children.size(); i++) {
+            if (color && testgreater(state.move(color, children[i]), depth - 1, score, !color)) {
+                return true;
+            }
+            if (!color && !testgreater(state.move(color, children[i]), depth - 1, score, !color)) {
+                return false;
+            }
+    	}
+	}
+    return color ? false : true;
+}
+bool testgrequal(state_t state, int depth, int score, bool color) {
+    generated += 1;
+    if (depth == 0 || state.terminal()) {
+        if (state.value() >= score) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    std::vector<int> children = state.get_moves2(color);
+	if (!children.empty()) {
+		for (unsigned i = 0; i < children.size(); i++) {
+		    if (color && testgrequal(state.move(color, children[i]), depth - 1, score, !color)) {
+		        return true;
+		    }
+		    if (!color && !testgrequal(state.move(color, children[i]), depth - 1, score, !color)) {
+		        return false;
+		    }
+		}
+	}
+    return color ? false : true;
+}
 int scout(state_t state, int depth, int color, bool use_tt = false) {
+    generated+=1;
     if (depth == 0 || state.terminal()) { 
+        //cout << "score asociado " << state.value() << " en " << depth << endl; 
         return state.value();
     }
     int score = 0;
+    bool player = (color == 1) ? BLACK : WHITE;
+    std::vector<int> children = state.get_moves2(player);
+	if (children.empty()) {
+		score = scout(state, depth - 1, -color);
+	}
+	else {
+    	for (unsigned i = 0; i < children.size(); i++) {
+			if (i == 0) {
+				score = scout(state.move(player,children[i]), depth - 1, -color);
+			}
+			else {
+				if (player && testgreater(state.move(player, children[i]), depth - 1, score, !player)) {
+					score = scout(state.move(player, children[i]), depth - 1, -color);
+				}
+				if (!player && !testgrequal(state.move(player, children[i]), depth - 1, score, !player)) {
+					score = scout(state.move(player, children[i]), depth - 1, -color);
+				}
+			}
+        }
+        expanded+=1;      
+    }
     return score;
 }
-int negascout(state_t state, int depth, int alpha, int beta, int color, bool use_tt = false);
+int negascout(state_t state, int depth, int alpha, int beta, int color, bool use_tt = false) {
+	generated += 1;
+    if (depth == 0 || state.terminal()) {
+        int h = state.value();
+        expanded +=1;
+        return color * h;
+    }
+    int score = INT_MIN;
+	
+	bool player = (color == 1) ? BLACK : WHITE;
+    std::vector<int> children = state.get_moves2(player);
+	if (children.empty()) {
+		score = -negascout(state, depth - 1, -beta, -alpha, -color);
+		alpha = max(alpha, score);
+	} 
+	else {
+		for (unsigned i = 0; i < children.size(); i++) {
+		    //cout << "hijo posible " << children[i] << endl;
+		    if (i == 0) {
+		        score = -negascout(state.move(player, children[i]), depth - 1, -beta, -alpha, -color); 
+		        //cout << "fuckin score " << score << endl;
+		    }
+		    else {
+		        score = -negascout(state.move(player, children[i]), depth - 1, -alpha - 1, -alpha, -color);
+		           
+		        if (alpha < score && score < beta) {
+		            score = -negascout(state.move(player, children[i]), depth - 1, -beta, -score, -color);
+		        }
+		    }
+		    alpha = max(alpha, score);
+		    if (alpha >= beta) {
+		        continue;
+		    }
+		    expanded += 1;  
+		}
+	}
+    return alpha;
+}
 
 int main(int argc, const char **argv) {
     state_t pv[128];
@@ -232,9 +338,9 @@ int main(int argc, const char **argv) {
             } else if( algorithm == 2 ) {
                 value = negamax(pv[i], i, -200, 200, color, use_tt);
             } else if( algorithm == 3 ) {
-                value = scout(pv[i], npv-i, color, use_tt);
+                value = color * scout(pv[i], i, color, use_tt);
             } else if( algorithm == 4 ) {
-                //value = negascout(pv[i], 0, -200, 200, color, use_tt);
+                value = negascout(pv[i], i, -200, 200, color, use_tt);
             }
         } catch( const bad_alloc &e ) {
             cout << "size TT[0]: size=" << TTable[0].size() << ", #buckets=" << TTable[0].bucket_count() << endl;
