@@ -47,7 +47,6 @@ int maxmin(state_t state, int depth, bool use_tt);
 int minmax(state_t state, int depth, bool use_tt = false) {
 
     if ((depth == 0) || (state.terminal())) {
-        //cout << "terminal " << color * state.value() << endl;
         return state.value();
     }
 
@@ -62,21 +61,19 @@ int minmax(state_t state, int depth, bool use_tt = false) {
     else {
         
         for (unsigned int i = 0; i < valid_moves.size(); ++i) {
-            //cout << valid_moves[i] << endl;
+
             ++generated;
             score = min(score, maxmin(state.move(WHITE, valid_moves[i]), depth - 1, use_tt));
         }
         ++expanded;
     }
     
-    //cout << "alpha " << alpha << endl;
     return score;
 }
 
 int maxmin(state_t state, int depth, bool use_tt = false) {
 
     if ((depth == 0) || (state.terminal())) {
-        //cout << "terminal " << color * state.value() << endl;
         return state.value();
     }
 
@@ -91,28 +88,25 @@ int maxmin(state_t state, int depth, bool use_tt = false) {
     else {
         
         for (unsigned int i = 0; i < valid_moves.size(); ++i) {
-            //cout << valid_moves[i] << endl;
+
             ++generated;
             score = max(score, minmax(state.move(BLACK, valid_moves[i]), depth - 1, use_tt));
         }
         ++expanded;
     }
     
-    //cout << "alpha " << alpha << endl;
     return score;
 }
 
 int negamax(state_t state, int depth, int color, bool use_tt = false) {
     
     if ((depth == 0) || (state.terminal())) {
-        //cout << "terminal " << color * state.value() << endl;
         return color * state.value();
     }
 
     int alpha = INT_MIN;
     bool player = (color == 1) ? BLACK : WHITE;
     std::vector<int> valid_moves = state.get_moves(player);
-    cout << "Movimientos posibles = " << valid_moves.size()<< "\n" << endl;
     
     if (valid_moves.empty()) {   // No possible move for this player.
         alpha = max(alpha, (-1) * negamax(state, depth, (-1) * color));
@@ -121,40 +115,36 @@ int negamax(state_t state, int depth, int color, bool use_tt = false) {
     else {
         
         for (unsigned int i = 0; i < valid_moves.size(); ++i) {
-            //cout << valid_moves[i] << endl;
+
             ++generated;
             alpha = max(alpha, (-1) * negamax(state.move(player, valid_moves[i]), depth - 1, (-1) * color, use_tt));
         }
         ++expanded;
     }
     
-    //cout << "alpha " << alpha << endl;
     return alpha;
 }
 
 int negamax(state_t state, int depth, int alpha, int beta, int color, bool use_tt = false) {
 
     if ((depth == 0) || (state.terminal())) {
-        //cout << "terminal " << color * state.value() << endl;
         return color * state.value();
     }
 
     int score = INT_MIN;
     bool player = (color == 1) ? BLACK : WHITE;
     std::vector<int> valid_moves = state.get_moves(player);
-    //cout << "Movimientos posibles = " << valid_moves.size()<< "\n" << endl;
 
     if (valid_moves.empty()) {   // No possible move for this player.
         
         int aux = (-1) * negamax(state, depth, (-1) * beta, (-1) * alpha, (-1) * color, use_tt);
         score = max(score, aux);
-        //alpha = max(alpha, aux);
     }
 
     else {
         
         for (unsigned int i = 0; i < valid_moves.size(); ++i) {
-            //cout << valid_moves[i] << endl;
+
             ++generated;
 
             int aux = (-1) * negamax(state.move(player, valid_moves[i]), depth - 1, (-1) * beta, (-1) * alpha, (-1) * color, use_tt);
@@ -173,8 +163,6 @@ int negamax(state_t state, int depth, int alpha, int beta, int color, bool use_t
 
 bool testgreater(state_t state, int depth, int score, bool color) {
     
-    generated += 1;
-    
     if (depth == 0 || state.terminal()) {
         if (state.value() > score) {
             return true;
@@ -192,6 +180,9 @@ bool testgreater(state_t state, int depth, int score, bool color) {
     
     else {
         for (unsigned int i = 0; i < children.size(); ++i) {
+            
+            ++generated;
+
             if (color && testgreater(state.move(color, children[i]), depth - 1, score, !color)) {
                 return true;
             }
@@ -199,13 +190,12 @@ bool testgreater(state_t state, int depth, int score, bool color) {
                 return false;
             }
         }
+        ++expanded;
     }
     return color ? false : true;
 }
 bool testgrequal(state_t state, int depth, int score, bool color) {
-    
-    generated += 1;
-    
+       
     if (depth == 0 || state.terminal()) {
         if (state.value() >= score) {
             return true;
@@ -223,6 +213,9 @@ bool testgrequal(state_t state, int depth, int score, bool color) {
     
     else {
         for (unsigned int i = 0; i < children.size(); ++i) {
+
+            ++generated;
+
             if (color && testgrequal(state.move(color, children[i]), depth - 1, score, !color)) {
                 return true;
             }
@@ -230,14 +223,13 @@ bool testgrequal(state_t state, int depth, int score, bool color) {
                 return false;
             }
         }
+        ++expanded;
     }
     return color ? false : true;
 }
 
 int scout(state_t state, int depth, int color, bool use_tt = false) {
-    
-    generated+=1;
-    
+       
     if (depth == 0 || state.terminal()) { 
         //cout << "score asociado " << state.value() << " en " << depth << endl; 
         return state.value();
@@ -253,6 +245,9 @@ int scout(state_t state, int depth, int color, bool use_tt = false) {
     
     else {
         for (unsigned int i = 0; i < children.size(); ++i) {
+
+            ++generated;
+
             if (i == 0) {
                 score = scout(state.move(player,children[i]), depth - 1, -color);
             }
@@ -265,17 +260,16 @@ int scout(state_t state, int depth, int color, bool use_tt = false) {
                 }
             }
         }
-        expanded+=1;      
+        ++expanded;      
     }
+
     return score;
 }
 
 int negascout(state_t state, int depth, int alpha, int beta, int color, bool use_tt = false) {
 
-    generated += 1;
     if (depth == 0 || state.terminal()) {
         int h = state.value();
-        expanded +=1;
         return color * h;
     }
     
@@ -287,8 +281,12 @@ int negascout(state_t state, int depth, int alpha, int beta, int color, bool use
         score = -negascout(state, depth, -beta, -alpha, -color);
         alpha = max(alpha, score);
     } 
+    
     else {
         for (unsigned int i = 0; i < children.size(); ++i) {
+
+            ++generated;
+
             //cout << "hijo posible " << children[i] << endl;
             if (i == 0) {
                 score = -negascout(state.move(player, children[i]), depth - 1, -beta, -alpha, -color); 
@@ -305,9 +303,10 @@ int negascout(state_t state, int depth, int alpha, int beta, int color, bool use
             if (alpha >= beta) {
                 break;
             }
-            expanded += 1;  
         }
+        ++expanded;  
     }
+
     return alpha;
 
 }
@@ -381,7 +380,7 @@ int main(int argc, const char **argv) {
             } else if( algorithm == 2 ) {
                 value = negamax(pv[i], i, -200, 200, color, use_tt);
             } else if( algorithm == 3 ) {
-                value = scout(pv[i], i, color, use_tt);
+                value = color * scout(pv[i], i, color, use_tt);
             } else if( algorithm == 4 ) {
                 value = negascout(pv[i], i, -200, 200, color, use_tt);
             }
@@ -399,10 +398,7 @@ int main(int argc, const char **argv) {
              << ", #generated=" << generated
              << ", seconds=" << elapsed_time
              << ", #generated/second=" << generated/elapsed_time
-             << ", #pos=" << PV[npv-i]
              << endl;
-        //cout << pv[i];
-        //sleep(3);
 
     }
 
