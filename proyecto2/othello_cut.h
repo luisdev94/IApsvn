@@ -98,53 +98,80 @@ class state_t {
   public:
     explicit state_t(unsigned char t = 6) : t_(t), free_(0), pos_(0) { }
 
-    unsigned char t() const { return t_; }
-    unsigned free() const { return free_; }
-    unsigned pos() const { return pos_; }
-    size_t hash() const { return free_ ^ pos_ ^ t_; }
+    unsigned char t() const { 
+        return t_; 
+    }
+    
+    unsigned free() const { 
+        return free_; 
+    }
+    
+    unsigned pos() const { 
+        return pos_; 
+    }
+    
+    size_t hash() const { 
+        return free_ ^ pos_ ^ t_; 
+    }
 
     bool is_color(bool color, int pos) const {
-        if( color )
+        if ( color )
             return pos < 4 ? t_ & (1 << pos) : pos_ & (1 << (pos - 4));
         else
             return !(pos < 4 ? t_ & (1 << pos) : pos_ & (1 << (pos - 4)));
     }
-    bool is_black(int pos) const { return is_color(true, pos); }
-    bool is_white(int pos) const { return is_color(false, pos); }
-    bool is_free(int pos) const { return pos < 4 ? false : !(free_ & (1 << (pos - 4))); }
-    bool is_full() const { return ~free_ == 0; }
+
+    bool is_black(int pos) const { 
+        return is_color(true, pos); 
+    }
+
+    bool is_white(int pos) const { 
+        return is_color(false, pos); 
+    }
+    
+    bool is_free(int pos) const { 
+        return pos < 4 ? false : !(free_ & (1 << (pos - 4))); 
+    }
+    
+    bool is_full() const { 
+        return ~free_ == 0; 
+    }
 
     int value() const;
     bool terminal() const;
     bool outflank(bool color, int pos) const;
-    bool is_black_move(int pos) const { return (pos == DIM) || outflank(true, pos); }
-    bool is_white_move(int pos) const { return (pos == DIM) || outflank(false, pos); }
-
-    void set_color(bool color, int pos);
-    state_t move(bool color, int pos) const;
-    state_t black_move(int pos) { return move(true, pos); }
-    state_t white_move(int pos) { return move(false, pos); }
-    std::vector<int> get_moves(bool color) {
-        std::vector<int> valid_moves;
-        for( int pos = 0; pos < DIM; ++pos ) {
-            if (color) {
-                if (is_black_move(pos)) {
-                    valid_moves.push_back(pos);
-                }
-            }
-            else {
-                if (is_white_move(pos)) {
-                    valid_moves.push_back(pos);
-                }
-            }
-        }
-        if (valid_moves.empty()) {
-            valid_moves.push_back(-1);
-        }
-        return valid_moves;
+    
+    bool is_black_move(int pos) const { 
+        return (pos == DIM) || outflank(true, pos); 
+    }
+    
+    bool is_white_move(int pos) const { 
+        return (pos == DIM) || outflank(false, pos); 
     }
 
-    std::vector<int> get_moves2(bool color) {
+    void set_color(bool color, int pos);
+    
+    state_t move(bool color, int pos) const;
+    
+    state_t black_move(int pos) { 
+        return move(true, pos); 
+    }
+    
+    state_t white_move(int pos) { 
+        return move(false, pos); 
+    }
+    
+    int get_random_move(bool color) {
+        std::vector<int> valid_moves;
+        for( int pos = 0; pos < DIM; ++pos ) {
+            if( (color && is_black_move(pos)) || (!color && is_white_move(pos)) ) {
+                valid_moves.push_back(pos);
+            }
+        }
+        return valid_moves.empty() ? -1 : valid_moves[lrand48() % valid_moves.size()];
+    }
+
+    std::vector<int> get_moves(bool color) {
         std::vector<int> valid_moves;
         for ( int pos = 0; pos < DIM; ++pos ) {
             if( (color && is_black_move(pos)) || (!color && is_white_move(pos)) ) {
@@ -157,9 +184,11 @@ class state_t {
     bool operator<(const state_t &s) const {
         return (free_ < s.free_) || ((free_ == s.free_) && (pos_ < s.pos_));
     }
+
     bool operator==(const state_t &state) const {
         return (state.t_ == t_) && (state.free_ == free_) && (state.pos_ == pos_);
     }
+
     const state_t& operator=(const state_t &state) {
         t_ = state.t_;
         free_ = state.free_;
@@ -219,29 +248,27 @@ inline bool state_t::outflank(bool color, int pos) const {
     }
 
     // [CHECK OVER DIAGONALS REMOVED]
-    // Check dia1
 
+    // Process diagonal 1
     x = dia1[pos - 4];
     while( *x != pos ) ++x;
     if( *(x+1) != -1 ) {
         for( p = x + 1; (*p != -1) && !is_free(*p) && (color ^ is_black(*p)); ++p );
         if( (p > x + 1) && (*p != -1) && !is_free(*p) ) return true;
     }
-    if( x != dia1[pos - 4] ) {
+    if( x != cols[pos - 4] ) {
         for( p = x - 1; (p >= dia1[pos - 4]) && !is_free(*p) && (color ^ is_black(*p)); --p );
         if( (p < x - 1) && (p >= dia1[pos - 4]) && !is_free(*p) ) return true;
     }
 
-
-    // Check dia2
-
+    // Process diagonal 2
     x = dia2[pos - 4];
     while( *x != pos ) ++x;
     if( *(x+1) != -1 ) {
         for( p = x + 1; (*p != -1) && !is_free(*p) && (color ^ is_black(*p)); ++p );
         if( (p > x + 1) && (*p != -1) && !is_free(*p) ) return true;
     }
-    if( x != dia2[pos - 4] ) {
+    if( x != cols[pos - 4] ) {
         for( p = x - 1; (p >= dia2[pos - 4]) && !is_free(*p) && (color ^ is_black(*p)); --p );
         if( (p < x - 1) && (p >= dia2[pos - 4]) && !is_free(*p) ) return true;
     }
@@ -309,7 +336,8 @@ inline state_t state_t::move(bool color, int pos) const {
     }
 
     // [PROCESS OF DIAGONALS REMOVED]
-    // Process dia1
+
+    // Process diagonal 1
     x = dia1[pos - 4];
     while( *x != pos ) ++x;
     if( *(x+1) != -1 ) {
@@ -325,8 +353,7 @@ inline state_t state_t::move(bool color, int pos) const {
         }
     }
 
-
-    // Process dia2
+    // Process diagonal 2
     x = dia2[pos - 4];
     while( *x != pos ) ++x;
     if( *(x+1) != -1 ) {
@@ -341,6 +368,7 @@ inline state_t state_t::move(bool color, int pos) const {
             for( const int *q = x - 1; q > p; --q ) s.set_color(color, *q);
         }
     }
+
     return s;
 }
 
@@ -382,4 +410,3 @@ inline std::ostream& operator<<(std::ostream &os, const state_t &state) {
     state.print(os);
     return os;
 }
-
