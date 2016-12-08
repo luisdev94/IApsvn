@@ -1,0 +1,46 @@
+_______________________________________________________________________________
+
+Practical SAT -- A tutorial on applied satisfiability solving
+
+Niklas Een
+
+FMCAD, November 11, 2007
+_______________________________________________________________________________
+
+The presentation consists of five programs (4 binaries, 1 source code):
+
+    PracticalSAT    -- Views the slides. Will provide documentation upon run.
+    MiniSat_demo    -- Shows inner workings of MiniSat.
+    MiniSat_viz     -- Visualizes certain key parameters of the SAT run.
+    SatELite_demo   -- Demonstrates CNF preprocessing.
+    OptSynth        -- Source code for a program solving the synthesis problem
+                       discussed in the slides using MiniSat.
+
+Please view the README files for more information on how to use the three
+latter programs. Suggested runs:
+
+    MiniSat_demo small1.cnf
+    MiniSat_viz pico_25.cnf.gz
+    SatELite_demo    (no arguments, but make the xterm BIG before running)
+
+
+==============================
+Trouble shooting
+==============================
+
+On some systems, the lib-versions don't quite match up with what the binaries
+are expecting. In that case, you can try something like the following:
+
+    find /usr/lib/libpng*.so          -- find out what lib files you have
+    sudo ln -s <latest version> /usr/lib/libpng.so.3
+
+If you don't have root access, you can instead try:
+
+    ln -s <latest version>
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
+
+Non-bash users may try 'setenv LD_LIBRARY_PATH $LD_LIBRARY_PATH:.' for the
+last line.
+
+
+// Niklas Een (Nov 20, 2007)

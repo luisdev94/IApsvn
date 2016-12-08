@@ -1,0 +1,28 @@
+========================================
+MiniSat Demo
+========================================
+
+This demo runs MiniSat v1.14 and stops at selected points to display the
+internal state. You can run it on small example to view the inner working of
+MiniSat. Four benchmarks are distributed with this demo:
+
+    small1.cnf
+    small4.cnf
+    small6.cnf
+    tiny3.cnf
+
+You can also try your own SAT problem (if they are small!).
+
+NOTE: If you resize the window, you should do so before you start stepping
+through the demo, or else the rewind function (BackSpace) will not work
+properly.
+
+Keys to use:
+
+    Space     -- Step forward to next point of interest
+    BackSpace -- Go back one step into history
+    Return    -- Step forward to next major point of interest
+    c         -- Jump to directly to next conflict
+    q, Esc    -- Exit the program
+
+// Niklas Een (Nov 11, 2007)

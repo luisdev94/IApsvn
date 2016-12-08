@@ -1,0 +1,41 @@
+=============================================================================
+RUNNING THE DEMO
+=============================================================================
+
+This archive contains a statically linked Linux binary.  It must be run on a 
+117 x 51 sized terminal (or bigger) with black background and ANSI support.
+
+Keys:
+
+    SPACE/RETURN - Single-step 
+    p - Skip phase (variable elimination / subsumption)
+    r - Run until end
+    q - quit this run and start over
+    Q - QUIT! 
+
+If terminal seems strange afterwards, type "stty sane" and hit RETURN.
+
+
+=============================================================================
+WHAT IS IT?
+=============================================================================
+
+The CNF is a clausification of a propositional BMC formula derived from
+the following SMV file (unrolled 4 time frames):
+
+    module main()
+    {
+        num : array 4..0 of boolean;
+    
+        init(num) := 6;
+        next(num) := (~num[0]) ? (num >> 1) : (num * 3 + 1);  
+    
+        test : assert G (num ~= 1);
+    }
+
+The property is false, but only after 7 steps, so no counter-example is found
+(i.e. the CNF is UNSAT). SatELite was run without Variable-Elimination-by-
+Definition and Hyper-Unary-Resolution. Turning either one on will make the
+problem disappear completely by preprocessing.
+
+// Niklas Een (Nov 11, 2007)

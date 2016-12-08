@@ -1,0 +1,33 @@
+========================================
+MiniSat Visualizer
+========================================
+
+This demo runs MiniSat v1.14 and plots some statistics during the run.
+Four benchmarks are distributed with this demo:
+
+    bmc_satlib.cnf.gz
+    hole9.cnf.gz
+    pico_25.cnf.gz
+    tptp-LCL415.cnf.gz
+
+You have to hit SPACE to start the demo. You can pause the program by
+hitting SPACE again.
+
+The top plot (green lines) show the activity of the decision variables
+that are picked. Long lines indicate high activity. The white line indicates
+the front of the graph, as it paints over itself repeatedly.
+
+The middle part (red lines) goes at a different pace: at each conflict,
+the length of the conflict clause is show (1) before conflict clause
+minimization (blue-grayish) and after minimization (the red lines).
+On average there is a 30% gap between these two lines.
+
+The bottom part (yellow lines) goes at the same pace as the middle part:
+for each conflict, the decision level at which the conflict occurred is
+plotted (light-blue line) and the level to which we backtrack (yellow).
+Occasionally, there is a big back-jump resulting in a long blue line. Most
+of the time, the yellow line covers the blue (short back-jump).
+
+Restarts are shown as dotted red lines across the two bottom plots.
+
+// Niklas Een (Nov 11, 2007)
