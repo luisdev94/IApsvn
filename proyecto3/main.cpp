@@ -20,11 +20,9 @@
 using namespace std;
 
 
-// void restricciones0(int arriba,int abajo, int izquierda, int derecha, ofstream* output) {
-// 	output << std::to_string(arriba) << ' ' << to_string(izquierda) << ' ' << to_string(derecha) << ' ' << to_string(abajo) << '0' << endl;
-
-
-// };
+void restricciones0(int arriba,int abajo, int izquierda, int derecha, FILE * output) {
+	fprintf(output, "%d %d %d %d '0'\n", arriba,abajo,izquierda,derecha);
+};
 
 int main(int argc, char const *argv[]) {
 	
@@ -32,9 +30,9 @@ int main(int argc, char const *argv[]) {
 	int nro_filas, nro_columnas, nro_segmentos;
 	
 	ifstream in_file;
-	ofstream out_file;
+	FILE* out_file;
 	
-	out_file.open("output.txt");
+	out_file = fopen("output.txt","a");
 	in_file.open("example_input.txt");  // Open file for reading.
 
 	// read number of rows from the file
@@ -70,22 +68,22 @@ int main(int argc, char const *argv[]) {
 				derecha = izquierda + 1;
 				switch (c) {
 					case '0':
-						// restricciones0(arriba,abajo,izquierda,derecha,&out_file);
+						restricciones0(arriba,abajo,izquierda,derecha,out_file);
 						break;
 					case '1':
-						// restricciones1(arriba,abajo,izquierda,derecha,output);
+						// restricciones1(arriba,abajo,izquierda,derecha,out_file);
 						break;
 					case '2':
-						// restricciones2(arriba,abajo,izquierda,derecha,output);
+						// restricciones2(arriba,abajo,izquierda,derecha,out_file);
 						break;
 					case '3':
-						// restricciones3(arriba,abajo,izquierda,derecha,output);
+						// restricciones3(arriba,abajo,izquierda,derecha,out_file);
 						break;
 					case '4':
-						// restricciones4(arriba,abajo,izquierda,derecha,output);
+						// restricciones4(arriba,abajo,izquierda,derecha,out_file);
 						break;
 					case '.':
-						// restriccionesPunto(arriba,abajo,izquierda,derecha,output);
+						// restriccionesPunto(arriba,abajo,izquierda,derecha,out_file);
 						break;
 				}
 				j++;
@@ -102,7 +100,7 @@ int main(int argc, char const *argv[]) {
 	// }
 
 	in_file.close();  // Close file.
-	out_file.close();
+	fclose(out_file);
 
 	return 0;
 }
