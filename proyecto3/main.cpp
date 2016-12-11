@@ -15,8 +15,16 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include <string>
 
 using namespace std;
+
+
+// void restricciones0(int arriba,int abajo, int izquierda, int derecha, ofstream* output) {
+// 	output << std::to_string(arriba) << ' ' << to_string(izquierda) << ' ' << to_string(derecha) << ' ' << to_string(abajo) << '0' << endl;
+
+
+// };
 
 int main(int argc, char const *argv[]) {
 	
@@ -24,7 +32,9 @@ int main(int argc, char const *argv[]) {
 	int nro_filas, nro_columnas, nro_segmentos;
 	
 	ifstream in_file;
+	ofstream out_file;
 	
+	out_file.open("output.txt");
 	in_file.open("example_input.txt");  // Open file for reading.
 
 	// read number of rows from the file
@@ -39,12 +49,60 @@ int main(int argc, char const *argv[]) {
 
 	cout << "p cnf " << nro_segmentos << endl;
 
-	for (int i = 1; i <= nro_filas; ++i) {
-		// ciclo para leer cada una de las filas.
-		continue;
+	char c;
+	int j = 0;
+
+	for (int i = 0; i < nro_filas ; i++) {
+		// remover espacios
+		while (in_file.get(c) && j<nro_columnas) {
+			cout << "C vale " << c << endl;
+			if ((c >= 9 && c <= 13) || c == 32){
+				continue;
+			} else {
+				int arriba;
+				int abajo;
+				int izquierda;
+				int derecha;
+
+				arriba = j + (i*nro_columnas)+1;
+				abajo = j + ((i+1)*nro_columnas)+1;
+				izquierda = j + (nro_columnas+1) * i + 1 + ((nro_filas+1)*nro_columnas);
+				derecha = izquierda + 1;
+				switch (c) {
+					case '0':
+						// restricciones0(arriba,abajo,izquierda,derecha,&out_file);
+						break;
+					case '1':
+						// restricciones1(arriba,abajo,izquierda,derecha,output);
+						break;
+					case '2':
+						// restricciones2(arriba,abajo,izquierda,derecha,output);
+						break;
+					case '3':
+						// restricciones3(arriba,abajo,izquierda,derecha,output);
+						break;
+					case '4':
+						// restricciones4(arriba,abajo,izquierda,derecha,output);
+						break;
+					case '.':
+						// restriccionesPunto(arriba,abajo,izquierda,derecha,output);
+						break;
+				}
+				j++;
+			}
+		}
+		j=0;
 	}
 
+
+	// ciclo para leer cada una de las filas.
+	// 	i++;
+	// 	// ciclo para leer cada una de las filas.
+	// 	continue;
+	// }
+
 	in_file.close();  // Close file.
+	out_file.close();
 
 	return 0;
 }
