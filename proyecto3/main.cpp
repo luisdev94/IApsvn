@@ -14,7 +14,7 @@
 
 #include <fstream>
 #include <iostream>
-#include <string>
+#include <cstdlib>
 
 using namespace std;
 
@@ -29,11 +29,11 @@ int main(int argc, char const *argv[]) {
 
 	// read number of rows from the file
 	in_file >> data;
-	nro_filas = std::stoi(data);
+	nro_filas = atoi(data);
 
 	// read number of columns from the file
 	in_file >> data;
-	nro_columnas = std::stoi(data);
+	nro_columnas = atoi(data);
 
 	nro_segmentos = nro_columnas*(nro_filas+1) + nro_filas*(nro_columnas+1);
 
