@@ -125,6 +125,30 @@ q(i,j,n) v q(i,j,e) v q(i,j,s) v q(i,j,w)
 -q(i,j,e) v -q(i,j,w)
 -q(i,j,s) v -q(i,j,w)
 
+n=2
+q(i,j,n) v q(i,j,e) v q(i,j,s)
+q(i,j,n) v q(i,j,e) v q(i,j,w)
+q(i,j,w) v q(i,j,e) v q(i,j,s)
+q(i,j,n) v q(i,j,w) v q(i,j,s)
+-q(i,j,n) v -q(i,j,e) v -q(i,j,s)
+-q(i,j,n) v -q(i,j,e) v -q(i,j,w)
+-q(i,j,w) v -q(i,j,e) v -q(i,j,s)
+-q(i,j,n) v -q(i,j,w) v -q(i,j,s)
+
+n=3
+-q(i,j,n) v -q(i,j,e) v -q(i,j,s) v -q(i,j,w)
+q(i,j,n) v q(i,j,e)
+q(i,j,n) v q(i,j,s)
+q(i,j,n) v q(i,j,w)
+q(i,j,e) v q(i,j,s)
+q(i,j,e) v q(i,j,w)
+q(i,j,s) v q(i,j,w)
+
+n=4
+q(i,j,n)
+q(i,j,e)
+q(i,j,s)
+q(i,j,w)
 
 Cláusulas tipo 2
 ----------------
