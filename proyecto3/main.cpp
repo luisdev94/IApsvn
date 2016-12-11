@@ -37,6 +37,13 @@ void restricciones1(int arriba,int abajo, int izquierda, int derecha, FILE * out
 	fprintf(output, "%d %d 0\n", (-1)*izquierda,(-1)*derecha);
 };
 
+void restricciones4(int arriba,int abajo, int izquierda, int derecha, FILE * output) {
+	fprintf(output, "%d 0\n", arriba);
+	fprintf(output, "%d 0\n", abajo);
+	fprintf(output, "%d 0\n", izquierda);
+	fprintf(output, "%d 0\n", derecha);
+};
+
 int main(int argc, char const *argv[]) {
 	
 	char data[10];
@@ -93,7 +100,7 @@ int main(int argc, char const *argv[]) {
 						// restricciones3(arriba,abajo,izquierda,derecha,out_file);
 						break;
 					case '4':
-						// restricciones4(arriba,abajo,izquierda,derecha,out_file);
+						restricciones4(arriba,abajo,izquierda,derecha,out_file);
 						break;
 					case '.':
 						// restriccionesPunto(arriba,abajo,izquierda,derecha,out_file);
