@@ -1,30 +1,133 @@
-En vez de enfocarnos en cada celda y la presencia de segmentos en sus
-lado norte, sur, este y oeste, lo que hicimos fue representar los
-segmentos de la matriz con variables desde 1 hasta (N+1)M + N(M+1).
+Universidad Simón Bolívar
+Departamento de Computación y Tecnología de la Información
+CI5437 - Inteligencia Artificial I
+Trimestre Sept-Dic 2016
 
-El orden de enumeracion de los segmentos comienza por los horizontales
-y termina con los verticales. Se comienza a contar desde la esquina
-superior izquierda, siendo el segmento #1 el que corresponde
-al norte de la casilla [1,1], el segmento #2 seria el que corresponde
-al norte de la casilla [1,2], y asi sucesivamente.
+Proyecto III SAT
+Conclusiones y Resultados
 
-Al finalizar de enumerar los segmentos horizontales, comenzamos nuevamente
-por la esquina superior izquierda. El desplazamiento es de izquierda a
-derecha y de arriba hacia abajo.
+Hecho por: Luis Carlos Díaz 11-10293
+           Gabriel Iglesias 11-10476
+           Fernando Saraiva 09-19794
 
-Esta decision de implementacion hace que se requieran menos clausulas,
-ya que las clausulas utilizadas para indicar que el segmento ubicado entre
-dos celdas adyacentes es el mismo - por ejemplo, el segmento este de la celda c(1,2) y
-el segmento oeste de la celda c(2,2) -, se pueden omitir, ya que le hemos asignado
-un numero al segmento, siendo 'X' el segmento este de la celda c(1,2) y a su vez,
-el segmento oeste de la celda c(2,2).
+-------------------------------------------------------------------------------
+								Introducción
+-------------------------------------------------------------------------------
 
-Esta decision de diseño hizo más compleja la impresión de resultados, ya que el orden
-de la impresion no es secuencial y se debieron utilizar varios ciclos para poder
-imprimir en el orden deseado. (Aunque la eficiencia es la misma, la implementación
-pudo ser más legible con otra decisión de diseño).
+Se quiere resolver un juego que consiste de una retícula de N x M casillas, cada 
+una rodeada de 4 segmentos de recta de igual longitud.
 
-Para la resolución de cláusulas tipo 2 no nos enfocamos en reconocer si alguna 
-celda era interna o externa, simplemente con limitar a que cada segmento tenga 
-exactamente 2 segmentos adyacentes, garantizamos que exista un ciclo contínuo
-y que no se doble sobre sí mismo.
+Las celdas pueden venir etiquetadas con enteros en { 0, 1, 2, 3, 4 } que indican 
+cuantos segmentos que rodean a la celda están en la solución.  La solución al juego 
+consiste en trazar sobre los segmentos de la retícula una única línea cerrada, 
+continua y simple (que no se dobla sobre si misma), la cual particiona las celdas 
+en el grupo de celdas interiores al perímetro que define la línea y las celdas
+exteriores al mismo. Observar que para todo par de celdas c1 y c2:
+
+1. Ambas celdas son interiores si y sólo si existe un camino de c1
+   a c2 que no cruza el perímetro,
+
+2. Una celda es exterior si y solo si se puede trazar un camino que
+   "sale" del retículado sin cruzar el perímetro,
+
+3. Si c1 es interior y c2 es exterior, entonces todo camino que
+   conecta a c1 y c2 cruza el perímetro.
+
+-------------------------------------------------------------------------------
+								Solución
+-------------------------------------------------------------------------------
+
+Para solucionar el prolema del juego la estrategia consiste en escribir un 
+programa que a partir de un archivo de texto de entrada con algunas instancias 
+del juego a resolver para cada instancia escriba otro archivo de texto con una 
+fórmula lógica en fomato CNF donde cada clausula representa alguna restriccion 
+para los segmentos del camino que se quiere dibujar.
+
+Luego, el archivo creado es pasado a SAT solver, en nuestro caso MiniSat para 
+obtener una soluci;on del problema que luego es reescrita de la manera pedida
+
+MiniSat es un solucionador SAT minimalista y de código abierto, desarrollado para 
+ayudar a los investigadores y desarrolladores a comenzar a trabajar en SAT.
+
+Para obtener el codifo fuente o binario y más información en general ir a 
+http://minisat.se/
+
+Se siguió la ayuda ofrecida pero con algunas modificaciones a continuación:
+  
+- En vez de enfocarnos en cada celda y la presencia de segmentos en sus
+  lado norte, sur, este y oeste, lo que hicimos fue representar los
+  segmentos de la matriz con números enteros desde 1 hasta (N+1)M + N(M+1).
+
+  El orden de enumeracion de los segmentos comienza por los horizontales
+  y termina con los verticales. Se comienza a contar desde la esquina
+  superior izquierda, siendo el segmento #1 el que corresponde
+  al norte de la casilla [1,1], el segmento #2 seria el que corresponde
+  al norte de la casilla [1,2], y asi sucesivamente.
+
+  Al finalizar de enumerar los segmentos horizontales, comenzamos nuevamente
+  por la esquina superior izquierda. El desplazamiento es de izquierda a
+  derecha y de arriba hacia abajo.
+
+  Esta decision de implementacion hace que se requieran menos clausulas,
+  ya que las clausulas utilizadas para indicar que el segmento ubicado entre
+  dos celdas adyacentes es el mismo - por ejemplo, el segmento este de la celda c(1,2) y
+  el segmento oeste de la celda c(2,2) -, se pueden omitir, ya que le hemos asignado
+  un numero al segmento, siendo 'X' el segmento este de la celda c(1,2) y a su vez,
+  el segmento oeste de la celda c(2,2).
+
+  Esta decision de diseño hizo más compleja la impresión de resultados, ya que el orden
+  de la impresion no es secuencial y se debieron utilizar varios ciclos para poder
+  imprimir en el orden deseado. (Aunque la eficiencia es la misma, la implementación
+  pudo ser más legible con otra decisión de diseño).
+
+- Para la resolución de cláusulas tipo 2 no nos enfocamos en reconocer si alguna 
+  celda era interna o externa, simplemente con limitar a que cada segmento tenga 
+  exactamente 2 segmentos adyacentes, garantizamos que exista un ciclo contínuo
+  y que no se doble sobre sí mismo.
+
+- Las clausulas tipo 1 fueron ampliada de la siguiente manera:
+
+  si n = 0, se deben agregar las fórmulas:
+
+  -q(i,j,n)
+  -q(i,j,e)
+  -q(i,j,s)
+  -q(i,j,w)
+
+  y si n=1, se deben agregar las fórmulas:
+
+  q(i,j,n) v q(i,j,e) v q(i,j,s) v q(i,j,w)
+  -q(i,j,n) v -q(i,j,e)
+  -q(i,j,n) v -q(i,j,s)
+  -q(i,j,n) v -q(i,j,w)
+  -q(i,j,e) v -q(i,j,s)
+  -q(i,j,e) v -q(i,j,w)
+  -q(i,j,s) v -q(i,j,w)
+
+  y si n = 2
+
+  q(i,j,n) v q(i,j,e) v q(i,j,s)
+  q(i,j,n) v q(i,j,e) v q(i,j,w)
+  q(i,j,w) v q(i,j,e) v q(i,j,s)
+  q(i,j,n) v q(i,j,w) v q(i,j,s)
+  -q(i,j,n) v -q(i,j,e) v -q(i,j,s)
+  -q(i,j,n) v -q(i,j,e) v -q(i,j,w)
+  -q(i,j,w) v -q(i,j,e) v -q(i,j,s)
+  -q(i,j,n) v -q(i,j,w) v -q(i,j,s)
+
+  y si n = 3
+
+  -q(i,j,n) v -q(i,j,e) v -q(i,j,s) v -q(i,j,w)
+  q(i,j,n) v q(i,j,e)
+  q(i,j,n) v q(i,j,s)
+  q(i,j,n) v q(i,j,w)
+  q(i,j,e) v q(i,j,s)
+  q(i,j,e) v q(i,j,w)
+  q(i,j,s) v q(i,j,w)
+
+  finalmente si n = 4
+
+  q(i,j,n)
+  q(i,j,e)
+  q(i,j,s)
+  q(i,j,w)
