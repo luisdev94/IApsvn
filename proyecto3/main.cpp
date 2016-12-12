@@ -35,12 +35,11 @@ void cierraLazo(int filas, int columnas, FILE *output) {
     verticales[3] = 2*filas*columnas + filas + columnas;
  
     //SEGMENTOS HORIZONTALES
-   
     for (int i = 0; i < 4; i++) {
         fprintf(output, "%d %d 0\n", -horizontales[i], verticales[i]);
         if (i % 2 == 0) {
             fprintf(output, "%d %d %d 0\n", -horizontales[i], horizontales[i]+1, verticales[i]+1);
-            fprintf(output, "%d %d %d 0\n", -horizontales[i], -(horizontales[i]+1), -(verticales[i]+1));           
+            fprintf(output, "%d %d %d 0\n", -horizontales[i], -(horizontales[i]+1), -(verticales[i]+1));          
         }
         else {
             fprintf(output, "%d %d %d 0\n", -horizontales[i], horizontales[i]-1, verticales[i]-1);
@@ -53,7 +52,7 @@ void cierraLazo(int filas, int columnas, FILE *output) {
         fprintf(output, "%d %d 0\n", -verticales[i], horizontales[i]);
         if (i < 2) {
             fprintf(output, "%d %d %d 0\n", -verticales[i], verticales[i]+columnas+1, horizontales[i]+columnas);
-            fprintf(output, "%d %d %d 0\n", -verticales[i], -(verticales[i]+columnas+1), -(horizontales[i]+columnas));         
+            fprintf(output, "%d %d %d 0\n", -verticales[i], -(verticales[i]+columnas+1), -(horizontales[i]+columnas));        
         }
         else {
             fprintf(output, "%d %d %d 0\n", -verticales[i], verticales[i]-columnas-1, horizontales[i]-columnas);
@@ -123,46 +122,76 @@ void cierraLazo(int filas, int columnas, FILE *output) {
     //SEGMENTOS INTERIORES HORIZONTALES
    
     int contador = 0;
+    int fail = 0;
     for (int i = columnas+1; i <= filas*columnas; i++) {
-        int vertical = filas*columnas+i;
+        int vertical = filas*columnas+i+fail;
         if (contador == 0) {
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -vertical, -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -vertical, -(vertical+columnas+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -vertical, -(vertical+columnas+2));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -(vertical+columnas+1), -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -(vertical+columnas+2), -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -(vertical+columnas+2), -(vertical+columnas+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+1), -vertical, -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+2), -vertical, -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+1), -(vertical+columnas+2), -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+1), -vertical, -(vertical+columnas+2));            
+ 
             fprintf(output, "%d %d %d %d %d 0\n", -i, i+1, vertical, vertical+1, vertical+columnas+1);
-            fprintf(output, "%d %d %d %d %d 0\n", -i, -(i+1), -vertical, -(vertical+1), -(vertical+columnas+1));
             fprintf(output, "%d %d %d %d %d 0\n", -i, vertical+columnas+2, vertical, vertical+1, vertical+columnas+1);
-            fprintf(output, "%d %d %d %d %d 0\n", -i, -(vertical+columnas+2), -vertical, -(vertical+1), -(vertical+columnas+1));
             fprintf(output, "%d %d %d %d %d 0\n", -i, i+1, vertical, vertical+1, vertical+columnas+2);
-            fprintf(output, "%d %d %d %d %d 0\n", -i, -(i+1), -vertical, -(vertical+1), -(vertical+columnas+2));
             fprintf(output, "%d %d %d %d %d 0\n", -i, i+1, vertical, vertical+columnas+2, vertical+columnas+1);
-            fprintf(output, "%d %d %d %d %d 0\n", -i, -(i+1), -vertical, -(vertical+columnas+2), -(vertical+columnas+1));
             fprintf(output, "%d %d %d %d %d 0\n", -i, i+1, vertical+columnas+2, vertical+1, vertical+columnas+1);
-            fprintf(output, "%d %d %d %d %d 0\n", -i, -(i+1), -(vertical+columnas+2), -(vertical+1), -(vertical+columnas+1));
         }
         else if (contador == columnas-1) {
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i-1), -vertical, -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i-1), -vertical, -(vertical+columnas+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i-1), -vertical, -(vertical+columnas+2));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i-1), -(vertical+columnas+1), -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i-1), -(vertical+columnas+2), -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i-1), -(vertical+columnas+2), -(vertical+columnas+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+1), -vertical, -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+2), -vertical, -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+1), -(vertical+columnas+2), -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+1), -vertical, -(vertical+columnas+2));            
+ 
             fprintf(output, "%d %d %d %d %d 0\n", -i, i-1, vertical, vertical+1, vertical+columnas+1);
-            fprintf(output, "%d %d %d %d %d 0\n", -i, -(i-1), -vertical, -(vertical+1), -(vertical+columnas+1));
             fprintf(output, "%d %d %d %d %d 0\n", -i, vertical+columnas+2, vertical, vertical+1, vertical+columnas+1);
-            fprintf(output, "%d %d %d %d %d 0\n", -i, -(vertical+columnas+2), -vertical, -(vertical+1), -(vertical+columnas+1));
             fprintf(output, "%d %d %d %d %d 0\n", -i, i-1, vertical, vertical+1, vertical+columnas+2);
-            fprintf(output, "%d %d %d %d %d 0\n", -i, -(i-1), -vertical, -(vertical+1), -(vertical+columnas+2));
             fprintf(output, "%d %d %d %d %d 0\n", -i, i-1, vertical, vertical+columnas+2, vertical+columnas+1);
-            fprintf(output, "%d %d %d %d %d 0\n", -i, -(i-1), -vertical, -(vertical+columnas+2), -(vertical+columnas+1));
             fprintf(output, "%d %d %d %d %d 0\n", -i, i-1, vertical+columnas+2, vertical+1, vertical+columnas+1);
-            fprintf(output, "%d %d %d %d %d 0\n", -i, -(i-1), -(vertical+columnas+2), -(vertical+1), -(vertical+columnas+1));
-            contador = 0;
+            contador = -1;
+            fail+=1;
         }
         else {
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -vertical, -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -vertical, -(vertical+columnas+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -vertical, -(vertical+columnas+2));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -(vertical+columnas+1), -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -(vertical+columnas+2), -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -(vertical+columnas+2), -(vertical+columnas+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+1), -vertical, -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+2), -vertical, -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+1), -(vertical+columnas+2), -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+1), -vertical, -(vertical+columnas+2));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i-1), -vertical, -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i-1), -vertical, -(vertical+columnas+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i-1), -vertical, -(vertical+columnas+2));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i-1), -(vertical+columnas+1), -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i-1), -(vertical+columnas+2), -(vertical+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i-1), -(vertical+columnas+2), -(vertical+columnas+1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -vertical, -(i-1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+2), -(i+1), -(i-1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(vertical+columnas+1), -(i+1), -(i-1));
+            fprintf(output, "%d %d %d %d 0\n", -i, -(i+1), -(vertical+1), -(i-1));
+ 
+ 
             fprintf(output, "%d %d %d %d %d %d 0\n", -i, i+1, i-1, vertical, vertical+1, vertical+columnas+1);
-            fprintf(output, "%d %d %d %d %d %d 0\n", -i, -(i+1), -(i-1), -vertical, -(vertical+1), -(vertical+columnas+1));
-            fprintf(output, "%d %d %d %d %d %d 0\n", -i, i-1, vertical+columnas+2, vertical, vertical+1, vertical+columnas+1);
-            fprintf(output, "%d %d %d %d %d %d 0\n", -i, -(i-1), -(vertical+columnas+2), -vertical, -(vertical+1), -(vertical+columnas+1));
+            fprintf(output, "%d %d %d %d %d %d 0\n", -i, i-1, vertical+columnas+2, vertical, vertical+1, vertical+columnas+1);;
             fprintf(output, "%d %d %d %d %d %d 0\n", -i, i+1, i-1, vertical, vertical+1, vertical+columnas+2);
-            fprintf(output, "%d %d %d %d %d %d 0\n", -i, -(i+1), -(i-1), -vertical, -(vertical+1), -(vertical+columnas+2));
             fprintf(output, "%d %d %d %d %d %d 0\n", -i, i+1, i-1, vertical, vertical+columnas+2, vertical+columnas+1);
-            fprintf(output, "%d %d %d %d %d %d 0\n", -i, -(i+1), -(i-1), -vertical, -(vertical+columnas+2), -(vertical+columnas+1));
             fprintf(output, "%d %d %d %d %d %d 0\n", -i, i+1, i-1, vertical+columnas+2, vertical+1, vertical+columnas+1);
-            fprintf(output, "%d %d %d %d %d %d 0\n", -i, -(i+1), -(i-1), -(vertical+columnas+2), -(vertical+1), -(vertical+columnas+1));
             fprintf(output, "%d %d %d %d %d %d 0\n", -i, i+1, vertical, vertical+1, vertical+columnas+1, vertical+columnas+2);
-            fprintf(output, "%d %d %d %d %d %d 0\n", -i, -(i+1), -vertical, -(vertical+1), -(vertical+columnas+1), -(vertical+columnas+2));
         }
         contador+=1;
     }
@@ -177,42 +206,70 @@ void cierraLazo(int filas, int columnas, FILE *output) {
         }
         if (contador > 0) {
             if (i < (columnas+1)*(filas+1)) {
-                fprintf(output, "%d %d %d %d %d 0\n", -i, acc, acc+1, acc+columnas, acc+columnas+1);
-                fprintf(output, "%d %d %d %d %d 0\n", -i, -acc, -(acc+1), -(acc+columnas), -(acc+columnas+1));
-                fprintf(output, "%d %d %d %d %d 0\n", -i, i+columnas+1, acc+1, acc+columnas, acc+columnas+1);
-                fprintf(output, "%d %d %d %d %d 0\n", -i, -(i+columnas+1), -(acc+1), -(acc+columnas), -(acc+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+1), -(acc+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+1), -(i+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+columnas+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(i+columnas+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(i+columnas+1), -(acc+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc+columnas+1), -(acc+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(i+columnas+1), -(acc+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc+columnas+1), -(i+columnas+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc+columnas+1), -(acc+1), -(i+columnas+1));            
+ 
+                fprintf(output, "%d %d %d %d %d 0\n", -i, acc, (acc+1), acc+columnas, acc+columnas+1);
+                fprintf(output, "%d %d %d %d %d 0\n", -i, i+columnas+1, (acc+1), acc+columnas, acc+columnas+1);
+                fprintf(output, "%d %d %d %d %d 0\n", -i, acc, (acc+1), acc+columnas, i+columnas+1);
+                fprintf(output, "%d %d %d %d %d 0\n", -i, acc, (acc+1), i+columnas+1, acc+columnas+1);
                 fprintf(output, "%d %d %d %d %d 0\n", -i, acc, i+columnas+1, acc+columnas, acc+columnas+1);
-                fprintf(output, "%d %d %d %d %d 0\n", -i, -acc, -(i+columnas+1), -(acc+columnas), -(acc+columnas+1));
-                fprintf(output, "%d %d %d %d %d 0\n", -i, acc, acc+1, i+columnas+1, acc+columnas+1);
-                fprintf(output, "%d %d %d %d %d 0\n", -i, -acc, -(acc+1), -(i+columnas+1), -(acc+columnas+1));
-                fprintf(output, "%d %d %d %d %d 0\n", -i, acc, acc+1, acc+columnas, i+columnas+1);
-                fprintf(output, "%d %d %d %d %d 0\n", -i, -acc, -(acc+1), -(acc+columnas), -(i+columnas+1));
             }
             else if (i > 2*columnas*filas+filas) {
-                fprintf(output, "%d %d %d %d %d 0\n", -i, acc, acc+1, acc+columnas, acc+columnas+1);
-                fprintf(output, "%d %d %d %d %d 0\n", -i, -acc, -(acc+1), -(acc+columnas), -(acc+columnas+1));
-                fprintf(output, "%d %d %d %d %d 0\n", -i, i-columnas-1, acc+1, acc+columnas, acc+columnas+1);
-                fprintf(output, "%d %d %d %d %d 0\n", -i, -(i-columnas-1), -(acc+1), -(acc+columnas), -(acc+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+1), -(acc+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+1), -(i-columnas-1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+columnas+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(i-columnas-1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(i-columnas-1), -(acc+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc+columnas+1), -(acc+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(i-columnas-1), -(acc+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc+columnas+1), -(i-columnas-1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc+columnas+1), -(acc+1), -(i-columnas-1));            
+ 
+                fprintf(output, "%d %d %d %d %d 0\n", -i, acc, (acc+1), acc+columnas, acc+columnas+1);
+                fprintf(output, "%d %d %d %d %d 0\n", -i, i-columnas-1, (acc+1), acc+columnas, acc+columnas+1);
+                fprintf(output, "%d %d %d %d %d 0\n", -i, acc, (acc+1), acc+columnas, i-columnas-1);
+                fprintf(output, "%d %d %d %d %d 0\n", -i, acc, (acc+1), i-columnas-1, acc+columnas+1);
                 fprintf(output, "%d %d %d %d %d 0\n", -i, acc, i-columnas-1, acc+columnas, acc+columnas+1);
-                fprintf(output, "%d %d %d %d %d 0\n", -i, -acc, -(i-columnas-1), -(acc+columnas), -(acc+columnas+1));
-                fprintf(output, "%d %d %d %d %d 0\n", -i, acc, acc+1, i-columnas-1, acc+columnas+1);
-                fprintf(output, "%d %d %d %d %d 0\n", -i, -acc, -(acc+1), -(i-columnas-1), -(acc+columnas+1));
-                fprintf(output, "%d %d %d %d %d 0\n", -i, acc, acc+1, acc+columnas, i-columnas-1);
-                fprintf(output, "%d %d %d %d %d 0\n", -i, -acc, -(acc+1), -(acc+columnas), -(i-columnas-1));
             }
             else {
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+1), -(acc+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+1), -(i+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+columnas+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(i+columnas+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(i+columnas+1), -(acc+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc+columnas+1), -(acc+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(i+columnas+1), -(acc+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc+columnas+1), -(i+columnas+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc+columnas+1), -(acc+1), -(i+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(acc+1), -(i-columnas-1));  
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(i-columnas-1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(i-columnas-1), -(acc+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(i-columnas-1), -(acc+1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc+columnas+1), -(i-columnas-1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc+columnas+1), -(acc+1), -(i-columnas-1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(i+columnas+1), -(i-columnas-1), -(acc+columnas));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(i+columnas+1), -(i-columnas-1), -(acc+columnas+1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(acc), -(i+columnas+1), -(i-columnas-1));
+                fprintf(output, "%d %d %d %d 0\n", -i, -(i+columnas+1), -(acc+1), -(i-columnas-1));
+ 
+ 
                 fprintf(output, "%d %d %d %d %d %d 0\n", -i, acc, acc+1, acc+columnas, acc+columnas+1, i-columnas-1);
-                fprintf(output, "%d %d %d %d %d %d 0\n", -i, -acc, -(acc+1), -(acc+columnas), -(acc+columnas+1), -(i-columnas-1));
                 fprintf(output, "%d %d %d %d %d %d 0\n", -i, i+columnas+1, acc+1, acc+columnas, acc+columnas+1, i-columnas-1);
-                fprintf(output, "%d %d %d %d %d %d 0\n", -i, -(i+columnas+1), -(acc+1), -(acc+columnas), -(acc+columnas+1), -(i-columnas-1));
                 fprintf(output, "%d %d %d %d %d %d 0\n", -i, acc, i+columnas+1, acc+columnas, acc+columnas+1, i-columnas-1);
-                fprintf(output, "%d %d %d %d %d %d 0\n", -i, -acc, -(i+columnas+1), -(acc+columnas), -(acc+columnas+1), -(i-columnas-1));
                 fprintf(output, "%d %d %d %d %d %d 0\n", -i, acc, acc+1, i+columnas+1, acc+columnas+1, i-columnas-1);
-                fprintf(output, "%d %d %d %d %d %d 0\n", -i, -acc, -(acc+1), -(i+columnas+1), -(acc+columnas+1), -(i-columnas-1));
                 fprintf(output, "%d %d %d %d %d %d 0\n", -i, acc, acc+1, acc+columnas, i+columnas+1, i-columnas-1);
-                fprintf(output, "%d %d %d %d %d %d 0\n", -i, -acc, -(acc+1), -(acc+columnas), -(i+columnas+1), -(i-columnas-1));
                 fprintf(output, "%d %d %d %d %d %d 0\n", -i, acc, acc+1, acc+columnas, acc+columnas+1, i+columnas+1);
-                fprintf(output, "%d %d %d %d %d %d 0\n", -i, -acc, -(acc+1), -(acc+columnas), -(acc+columnas+1), -(i+columnas+1));
             }
         }
         contador+=1;
@@ -319,6 +376,7 @@ void leerResultadoSat(FILE * in_file,FILE * out_file, int N, int M) {
 		fprintf(out_file,"%d",segments[i]);
 		i++;
 	}
+	fprintf(out_file,"\n");
 };
   	
 
@@ -327,20 +385,24 @@ int main(int argc, char const *argv[]) {
 	
 	char data[10];
 	int nro_filas, nro_columnas, nro_segmentos;
-	
+	FILE * output;
+
 	ifstream in_file;
 	FILE* out_file;
 	
 	out_file = fopen("output.txt","a");
 	in_file.open("input.txt");  // Open file for reading.
+	output = fopen("Results.txt","w");
 
 	// read number of rows from the file
 	in_file >> data;
 	nro_filas = atoi(data);
+	fprintf(output, "%c ", data);
 
 	// read number of columns from the file
 	in_file >> data;
 	nro_columnas = atoi(data);
+	fprintf(output, "%c ", data);
 
 	if (argc == 1) {
 
@@ -354,6 +416,7 @@ int main(int argc, char const *argv[]) {
 		for (int i = 0; i < nro_filas ; i++) {
 			// remover espacios
 			while (in_file.get(c) && j<nro_columnas) {
+			fprintf(output, "%c", c);
 				// cout << "C vale " << c << endl;
 				if ((c >= 9 && c <= 13) || c == 32){
 					continue;
@@ -402,7 +465,7 @@ int main(int argc, char const *argv[]) {
 
 		FILE* input;
 		FILE* output;
-		input = fopen("ola.txt","r");
+		input = fopen(argv[1],"r");
 		output = fopen("Results.txt","w");
 		leerResultadoSat(input,output, nro_filas, nro_columnas);
 
