@@ -1,0 +1,30 @@
+En vez de enfocarnos en cada celda y la presencia de segmentos en sus
+lado norte, sur, este y oeste, lo que hicimos fue representar los
+segmentos de la matriz con variables desde 1 hasta (N+1)M + N(M+1).
+
+El orden de enumeracion de los segmentos comienza por los horizontales
+y termina con los verticales. Se comienza a contar desde la esquina
+superior izquierda, siendo el segmento #1 el que corresponde
+al norte de la casilla [1,1], el segmento #2 seria el que corresponde
+al norte de la casilla [1,2], y asi sucesivamente.
+
+Al finalizar de enumerar los segmentos horizontales, comenzamos nuevamente
+por la esquina superior izquierda. El desplazamiento es de izquierda a
+derecha y de arriba hacia abajo.
+
+Esta decision de implementacion hace que se requieran menos clausulas,
+ya que las clausulas utilizadas para indicar que el segmento ubicado entre
+dos celdas adyacentes es el mismo - por ejemplo, el segmento este de la celda c(1,2) y
+el segmento oeste de la celda c(2,2) -, se pueden omitir, ya que le hemos asignado
+un numero al segmento, siendo 'X' el segmento este de la celda c(1,2) y a su vez,
+el segmento oeste de la celda c(2,2).
+
+Esta decision de diseño hizo más compleja la impresión de resultados, ya que el orden
+de la impresion no es secuencial y se debieron utilizar varios ciclos para poder
+imprimir en el orden deseado. (Aunque la eficiencia es la misma, la implementación
+pudo ser más legible con otra decisión de diseño).
+
+Para la resolución de cláusulas tipo 2 no nos enfocamos en reconocer si alguna 
+celda era interna o externa, simplemente con limitar a que cada segmento tenga 
+exactamente 2 segmentos adyacentes, garantizamos que exista un ciclo contínuo
+y que no se doble sobre sí mismo.
