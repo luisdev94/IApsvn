@@ -131,3 +131,12 @@ Se siguió la ayuda ofrecida pero con algunas modificaciones a continuación:
   q(i,j,e)
   q(i,j,s)
   q(i,j,w)
+
+Para ejecutar el programa debe compilar main.cpp, y debe existir un archivo
+input.txt con las instancias del problema. Se generara un documento de nombre
+"output.txt" con todas las clausulas cnf. Luego debera ejecutarse el minisat,
+pasando como primer parametro el archivo generado (output.txt) y como segundo
+parametro el nombre del archivo de salida. Finalmente, ejecutar el programa
+inicial pasando como parametro el nombre del archivo generado por Minisat, y
+los resultados apareceran en un archivo llamado "Results.txt"
+

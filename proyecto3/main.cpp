@@ -276,11 +276,11 @@ void leerResultadoSat(FILE * in_file,FILE * out_file, int N, int M) {
   
 
 	fscanf (in_file, "%s", &str);
-	cout << "El valor de str es: " << str << endl;
+	// cout << "El valor de str es: " << str << endl;
 	if (strcmp("SAT",str) == 0) {
-		cout << "Entro al if" << endl;
+		// cout << "Entro al if" << endl;
 		while (fscanf (in_file, "%d", &var) != EOF) {
-			printf("El valor de var es: %d\n", var);
+			// printf("El valor de var es: %d\n", var);
 			// cout << "El valor de var es: " << c << endl;
 			if (var > 0) {
 				segments[var] = 1;
@@ -299,7 +299,7 @@ void leerResultadoSat(FILE * in_file,FILE * out_file, int N, int M) {
 
 	while ((i <= hor+1) && (j < ver+1)){
 			while (i <= X*M) {
-				printf("El valor de i es: %d y el segments[%d] es: %d\n", i,i,segments[i]);
+				// printf("El valor de i es: %d y el segments[%d] es: %d\n", i,i,segments[i]);
 				fprintf(out_file,"%d",segments[i]);
 				i++;
 			}
@@ -307,7 +307,7 @@ void leerResultadoSat(FILE * in_file,FILE * out_file, int N, int M) {
 			X++;
 	
 			while (j <= Y*(M+1)) {
-				printf("El valor de j es: %d y el segments[%d] es: %d\n", j,hor+j,segments[hor+j]);
+				// printf("El valor de j es: %d y el segments[%d] es: %d\n", j,hor+j,segments[hor+j]);
 				fprintf(out_file,"%d",segments[hor+j]);
 				j++;
 			}
@@ -315,7 +315,7 @@ void leerResultadoSat(FILE * in_file,FILE * out_file, int N, int M) {
 			Y++;
 	}
 	while (i <= X*M) {
-		printf("El valor de i es: %d y el segments[%d] es: %d\n", i,i,segments[i]);
+		// printf("El valor de i es: %d y el segments[%d] es: %d\n", i,i,segments[i]);
 		fprintf(out_file,"%d",segments[i]);
 		i++;
 	}
@@ -332,7 +332,7 @@ int main(int argc, char const *argv[]) {
 	FILE* out_file;
 	
 	out_file = fopen("output.txt","a");
-	in_file.open("example_input.txt");  // Open file for reading.
+	in_file.open("input.txt");  // Open file for reading.
 
 	// read number of rows from the file
 	in_file >> data;
@@ -342,58 +342,71 @@ int main(int argc, char const *argv[]) {
 	in_file >> data;
 	nro_columnas = atoi(data);
 
-	nro_segmentos = nro_columnas*(nro_filas+1) + nro_filas*(nro_columnas+1);
+	if (argc == 1) {
 
-	cout << "p cnf " << nro_segmentos << endl;
+		nro_segmentos = nro_columnas*(nro_filas+1) + nro_filas*(nro_columnas+1);
 
-	char c;
-	int j = 0;
+		// cout << "p cnf " << nro_segmentos << endl;
 
-	for (int i = 0; i < nro_filas ; i++) {
-		// remover espacios
-		while (in_file.get(c) && j<nro_columnas) {
-			cout << "C vale " << c << endl;
-			if ((c >= 9 && c <= 13) || c == 32){
-				continue;
-			} else {
-				int arriba;
-				int abajo;
-				int izquierda;
-				int derecha;
+		char c;
+		int j = 0;
 
-				arriba = j + (i*nro_columnas)+1;
-				abajo = j + ((i+1)*nro_columnas)+1;
-				izquierda = j + (nro_columnas+1) * i + 1 + ((nro_filas+1)*nro_columnas);
-				derecha = izquierda + 1;
-				switch (c) {
-					case '0':
-						restricciones0(arriba,abajo,izquierda,derecha,out_file);
-						break;
-					case '1':
-						restricciones1(arriba,abajo,izquierda,derecha,out_file);
-						break;
-					case '2':
-						restricciones2(arriba,abajo,izquierda,derecha,out_file);
-						break;
-					case '3':
-						restricciones3(arriba,abajo,izquierda,derecha,out_file);
-						break;
-					case '4':
-						restricciones4(arriba,abajo,izquierda,derecha,out_file);
-						break;
-					case '.':
-						break;
+		for (int i = 0; i < nro_filas ; i++) {
+			// remover espacios
+			while (in_file.get(c) && j<nro_columnas) {
+				// cout << "C vale " << c << endl;
+				if ((c >= 9 && c <= 13) || c == 32){
+					continue;
+				} else {
+					int arriba;
+					int abajo;
+					int izquierda;
+					int derecha;
+
+					arriba = j + (i*nro_columnas)+1;
+					abajo = j + ((i+1)*nro_columnas)+1;
+					izquierda = j + (nro_columnas+1) * i + 1 + ((nro_filas+1)*nro_columnas);
+					derecha = izquierda + 1;
+					switch (c) {
+						case '0':
+							restricciones0(arriba,abajo,izquierda,derecha,out_file);
+							break;
+						case '1':
+							restricciones1(arriba,abajo,izquierda,derecha,out_file);
+							break;
+						case '2':
+							restricciones2(arriba,abajo,izquierda,derecha,out_file);
+							break;
+						case '3':
+							restricciones3(arriba,abajo,izquierda,derecha,out_file);
+							break;
+						case '4':
+							restricciones4(arriba,abajo,izquierda,derecha,out_file);
+							break;
+						case '.':
+							break;
+					}
+					j++;
 				}
-				j++;
 			}
+			j=0;
 		}
-		j=0;
+
+		cierraLazo(nro_filas, nro_columnas, out_file);
+
+		in_file.close();  // Close file.
+		fclose(out_file);
+
+		return 0;
+	} else {
+
+		FILE* input;
+		FILE* output;
+		input = fopen(argv[1],"r");
+		output = fopen("Results.txt","w");
+		leerResultadoSat(input,output, nro_filas, nro_columnas);
+
+		fclose(input);
+		fclose(output);
 	}
-
-	cierraLazo(nro_filas, nro_columnas, out_file);
-
-	in_file.close();  // Close file.
-	fclose(out_file);
-
-	return 0;
 }
