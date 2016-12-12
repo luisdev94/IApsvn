@@ -15,7 +15,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
-#include <string>
+#include <string.h>
 
 using namespace std;
 
@@ -168,7 +168,7 @@ void cierraLazo(int filas, int columnas, FILE *output) {
     }
    
     //SEGMENTOS INTERIORES VERTICALES
-    int contador = 0;
+    contador = 0;
     int acc = 0;
     for (int i = columnas*filas+filas+1; i < 2*columnas*filas+columnas+filas; i++) {
         if (contador == columnas) {
@@ -265,21 +265,23 @@ void restricciones4(int arriba,int abajo, int izquierda, int derecha, FILE * out
 	fprintf(output, "%d 0\n", derecha);
 };
 
-void leerResultadoSat(char * satFile,char * txtFile, int N, int M) {
+void leerResultadoSat(FILE * in_file,FILE * out_file, int N, int M) {
 
 	char str[10];
 	int segments[2048];
 	int var;
+	char c;
 	int hor = M * (N+1);
 	int ver = N * (M+1);
   
-  	FILE * in_file;
-  	FILE * out_file;
-  	in_file = fopen (satFile,"r");
-  	out_file = fopen (txtFile,"w");
-	fscanf (in_file, "%s", str);
-	if (str.compare("SAT")) {
-		while (fscanf (in_file, "%d", var) != EOF){
+
+	fscanf (in_file, "%s", &str);
+	cout << "El valor de str es: " << str << endl;
+	if (strcmp("SAT",str) == 0) {
+		cout << "Entro al if" << endl;
+		while (fscanf (in_file, "%d", &var) != EOF) {
+			printf("El valor de var es: %d\n", var);
+			// cout << "El valor de var es: " << c << endl;
 			if (var > 0) {
 				segments[var] = 1;
 			} else if (var < 0) {
@@ -295,8 +297,9 @@ void leerResultadoSat(char * satFile,char * txtFile, int N, int M) {
 	int i = 1;
 	int j = 1;
 
-	while ((i <= hor) && (j < ver)){
+	while ((i <= hor+1) && (j < ver+1)){
 			while (i <= X*M) {
+				printf("El valor de i es: %d y el segments[%d] es: %d\n", i,i,segments[i]);
 				fprintf(out_file,"%d",segments[i]);
 				i++;
 			}
@@ -304,13 +307,19 @@ void leerResultadoSat(char * satFile,char * txtFile, int N, int M) {
 			X++;
 	
 			while (j <= Y*(M+1)) {
+				printf("El valor de j es: %d y el segments[%d] es: %d\n", j,hor+j,segments[hor+j]);
 				fprintf(out_file,"%d",segments[hor+j]);
 				j++;
 			}
 			fprintf(out_file," ");
-			Y++
+			Y++;
 	}
-}
+	while (i <= X*M) {
+		printf("El valor de i es: %d y el segments[%d] es: %d\n", i,i,segments[i]);
+		fprintf(out_file,"%d",segments[i]);
+		i++;
+	}
+};
   	
 
 
@@ -380,6 +389,8 @@ int main(int argc, char const *argv[]) {
 		}
 		j=0;
 	}
+
+	cierraLazo(nro_filas, nro_columnas, out_file);
 
 	in_file.close();  // Close file.
 	fclose(out_file);
