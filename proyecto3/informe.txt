@@ -132,11 +132,27 @@ Se siguió la ayuda ofrecida pero con algunas modificaciones a continuación:
   q(i,j,s)
   q(i,j,w)
 
+-------------------------------------------------------------------------------
+								Ejecución
+-------------------------------------------------------------------------------
+
 Para ejecutar el programa debe compilar main.cpp, y debe existir un archivo
 input.txt con las instancias del problema. Se generara un documento de nombre
-"output.txt" con todas las clausulas cnf. Luego debera ejecutarse el minisat,
-pasando como primer parametro el archivo generado (output.txt) y como segundo
-parametro el nombre del archivo de salida. Finalmente, ejecutar el programa
-inicial pasando como parametro el nombre del archivo generado por Minisat, y
-los resultados apareceran en un archivo llamado "Results.txt"
+"output.txt" con todas las clausulas cnf. 
+
+Luego debera ejecutarse el minisat, pasando como primer parametro el archivo 
+generado (output.txt) y como segundo parametro el nombre del archivo de salida. 
+
+Finalmente, ejecutar el programa inicial (main.cpp) pasando como parametro el 
+nombre del archivo generado por Minisat, y los resultados apareceran en un 
+archivo llamado "Results.txt"
+
+-------------------------------------------------------------------------------
+								Inconvenientes
+-------------------------------------------------------------------------------
+
+La versión actual es una versión incompleta de la solución. Actualmente solo 
+funciona para un archivo con una instancia del problema y existe un problema con
+las clausulas que verifican que el lazo sea cerrado lo cual nos impide proporcionar 
+la solución correcta.
 
