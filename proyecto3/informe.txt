@@ -44,7 +44,7 @@ fórmula lógica en fomato CNF donde cada clausula representa alguna restriccion
 para los segmentos del camino que se quiere dibujar.
 
 Luego, el archivo creado es pasado a SAT solver, en nuestro caso MiniSat para 
-obtener una soluci;on del problema que luego es reescrita de la manera pedida
+obtener una solución del problema que luego es reescrita de la manera pedida
 
 MiniSat es un solucionador SAT minimalista y de código abierto, desarrollado para 
 ayudar a los investigadores y desarrolladores a comenzar a trabajar en SAT.
