@@ -402,11 +402,10 @@ int main(int argc, char const *argv[]) {
 
 		FILE* input;
 		FILE* output;
-		input = fopen(argv[1],"r");
+		input = fopen("ola.txt","r");
 		output = fopen("Results.txt","w");
 		leerResultadoSat(input,output, nro_filas, nro_columnas);
 
-		fclose(input);
 		fclose(output);
 	}
 }
